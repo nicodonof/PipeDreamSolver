@@ -2,12 +2,15 @@ package defaulter;
 
 public class Main {
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+	public static void main(String[] args/*agregar q se pase por parametro*/) {
 		LevelReader lr = new LevelReader(new Level());
 		Level level = null;
 		level = lr.loadLevel("test.txt");
-		level.print();
+		if(level == null){
+			System.out.println("Archivo Mal Formado");
+		} else {
+			level.print();
+		}
 	}
 
 }

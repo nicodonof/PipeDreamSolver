@@ -20,6 +20,19 @@ public class Level {
 		}
 	}
 	
+	public boolean check(){
+		int start = 0;
+		for(int i = 0; i < rows; i++){
+			for (int j = 0; j< cols; j++)
+				if(mat[i][j] == 'N' || mat[i][j] == 'W' || mat[i][j] == 'S' || mat[i][j] == 'E')
+					start+=1;
+				else if(mat[i][j] != '#' && mat[i][j] != ' ')
+					return false;
+		}
+		return start == 1;
+	}
+
+	
 	public int getRows() {
 		return rows;
 	}

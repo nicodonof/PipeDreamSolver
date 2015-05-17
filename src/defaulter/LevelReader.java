@@ -29,17 +29,29 @@ public class LevelReader {
             	}
             }
             level.setMat(matAux);
+            if(!level.check()){
+            	bufferedReader.close();
+            	return null;
+            }
             int[] pieAux = new int[7];
             for(int i = 0; i < 7; i++){
             	pieAux[i] = Integer.valueOf(bufferedReader.readLine());
             }
             level.setPieces(pieAux);
+            if(bufferedReader.readLine() != null){
+            	bufferedReader.close();
+            	return null;
+            }
             bufferedReader.close();
         }
         catch(FileNotFoundException ex) {
         }
         catch(IOException ex) {
         }
+		catch(Exception ex){
+			return null;
+		}
 		return level;
 	}
+	
 }
