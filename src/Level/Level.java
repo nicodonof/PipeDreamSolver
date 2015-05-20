@@ -1,10 +1,14 @@
-package defaulter;
+package Level;
+
+import defaulter.Piece;
 
 public class Level {
-	private int rows;
-	private int cols;
-	private char[][] mat;
-	private int[] pieces;
+	protected int rows;
+	protected int cols;
+	protected char[][] mat;
+	private int[] pieces,beggining;
+	private LevelDrawer ld;
+	
 	
 	public void print(){
 		System.out.println(rows + ", " + cols);
@@ -24,8 +28,10 @@ public class Level {
 		int start = 0;
 		for(int i = 0; i < rows; i++){
 			for (int j = 0; j< cols; j++)
-				if(mat[i][j] == 'N' || mat[i][j] == 'W' || mat[i][j] == 'S' || mat[i][j] == 'E')
+				if(mat[i][j] == 'N' || mat[i][j] == 'W' || mat[i][j] == 'S' || mat[i][j] == 'E'){
+					beggining = new int[]{i,j};
 					start+=1;
+				}
 				else if(mat[i][j] != '#' && mat[i][j] != ' ')
 					return false;
 		}
@@ -56,6 +62,14 @@ public class Level {
 	}
 	public void setPieces(int[] pieces) {
 		this.pieces = pieces;
+	}
+
+	public LevelDrawer getLd() {
+		return ld;
+	}
+
+	public void setLd(LevelDrawer ld) {
+		this.ld = ld;
 	}
 	
 	

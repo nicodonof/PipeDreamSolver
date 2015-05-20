@@ -1,4 +1,4 @@
-package defaulter;
+package Level;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -6,13 +6,8 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class LevelReader {
-	private Level level;
 	
-	public LevelReader(Level level){
-		this.level = level;
-	}
-	
-	public Level loadLevel(String string){
+	public static Level loadLevel(Level level,String string){
 		String line = null;
 		try {
             FileReader fileReader = new FileReader(string);

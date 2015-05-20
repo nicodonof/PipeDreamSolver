@@ -1,4 +1,4 @@
-package defaulter;
+package Level;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -15,7 +15,7 @@ public class LevelDrawer {
 	    private JPanel levelBoard;
 	    private ImageIcon[] imgs;
 	    
-	    LevelDrawer(Level level) {
+	    public LevelDrawer(Level level) {
 	    	gui = new JPanel(new GridLayout(level.getRows(), level.getCols()));
 	    	imgs = new ImageIcon[19];
 	    	try {
@@ -37,7 +37,11 @@ public class LevelDrawer {
 	        } catch (IOException e) {
 	            e.printStackTrace();
 	        }
-		    char[][] mat = level.getMat();
+		    draw(level);
+		}
+	    
+	    public void draw(Level level){
+	    	char[][] mat = level.getMat();
 		    int aux = 0;
 	    	for(int i = 0; i < level.getRows();i++){
 	    		for(int j = 0; j < level.getCols(); j++){
@@ -85,7 +89,7 @@ public class LevelDrawer {
 	    				gui.add(new JLabel(imgs[aux]));
 	    		}
 	        }    	
-		}
+	    }
 
 	        
 	    		        

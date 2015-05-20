@@ -3,30 +3,32 @@ package defaulter;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-public class Main {
+import Level.Level;
+import Level.LevelDrawer;
+import Level.LevelReader;
 
+public class Main {
+	private static Level level;
+	
 	public static void main(String[] args/*agregar q se pase por parametro*/) {
-		LevelReader lr = new LevelReader(new Level());
-		Level level = null;
-		level = lr.loadLevel("test.txt");
+		level = null;
+		level = LevelReader.loadLevel(new Level(),"test.txt");
 		if(level == null){
 			System.out.println("Archivo Mal Formado");
 		} else {
 			level.print();
 		}
-		pres(level);
+		level.setLd(new LevelDrawer(level));
+		pres();
 	}
 		
-	public static void pres(Level level){
-		final Level level2 = level;
+	public static void pres(){
 		Runnable r = new Runnable() {
 			@Override
             public void run() {
-                LevelDrawer cb =
-                        new LevelDrawer(level2);
-
+                
                 JFrame f = new JFrame("level");
-                f.add(cb.getGui());
+                f.add(level.getLd().getGui());
                 f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 f.setLocationByPlatform(true);
 
