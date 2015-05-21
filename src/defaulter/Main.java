@@ -24,8 +24,7 @@ public class Main {
 		
 	public static void pres(){
 		Runnable r = new Runnable() {
-			@Override
-            public void run() {
+			public void run() {
                 
                 JFrame f = new JFrame("level");
                 f.add(level.getLd().getGui());
