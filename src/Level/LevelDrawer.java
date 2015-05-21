@@ -43,9 +43,9 @@ public class LevelDrawer {
 	    public void draw(Level level){
 	    	char[][] mat = level.getMat();
 		    int aux = 0;
-	    	for(int i = 0; i < level.getRows();i++){
-	    		for(int j = 0; j < level.getCols(); j++){
-	    			switch(mat[i][j]){
+	    	for(int i = 0; i < level.getCols();i++){
+	    		for(int j = 0; j < level.getRows(); j++){
+	    			switch(mat[j][i]){
 	    			case '#': 
 	    				aux = 17;
 	    				break;

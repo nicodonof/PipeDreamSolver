@@ -6,15 +6,15 @@ public class Level {
 	protected int rows;
 	protected int cols;
 	protected char[][] mat;
-	private int[] pieces,beggining;
+	private int[] pieces, beggining;
 	private LevelDrawer ld;
 	
 	
 	public void print(){
 		System.out.println(rows + ", " + cols);
-		for(int i = 0; i < rows; i++){
-			for (int j = 0; j< cols; j++)
-				System.out.print(mat[i][j]);
+		for(int i = 0; i < cols; i++){
+			for (int j = 0; j < rows; j++)
+				System.out.print(mat[j][i]);
 			System.out.println();
 		}
 		if(pieces != null){
@@ -26,10 +26,11 @@ public class Level {
 	
 	public boolean check(){
 		int start = 0;
-		for(int i = 0; i < rows; i++){
-			for (int j = 0; j< cols; j++)
+		for(int i = 0; i < cols; i++){
+			for (int j = 0; j < rows; j++)
 				if(mat[i][j] == 'N' || mat[i][j] == 'W' || mat[i][j] == 'S' || mat[i][j] == 'E'){
-					beggining = new int[]{i,j};
+					setBeggining(new int[]{i,j});
+					System.out.println("El start ta aca " +  i + ","+ j);
 					start+=1;
 				}
 				else if(mat[i][j] != '#' && mat[i][j] != ' ')
@@ -70,6 +71,14 @@ public class Level {
 
 	public void setLd(LevelDrawer ld) {
 		this.ld = ld;
+	}
+
+	public int[] getBeggining() {
+		return beggining;
+	}
+
+	public void setBeggining(int[] beggining) {
+		this.beggining = beggining;
 	}
 	
 	

@@ -6,7 +6,8 @@ import javax.swing.SwingUtilities;
 import Level.Level;
 import Level.LevelDrawer;
 import Level.LevelReader;
-
+import Level.LevelResolver;
+//prevPos = sumVector[0]==0?sumVector[1]==1?3:4:sumVector[0]==1?1:2;
 public class Main {
 	private static Level level;
 	
@@ -18,6 +19,8 @@ public class Main {
 		} else {
 			level.print();
 		}
+		LevelResolver ls = new LevelResolver();
+		ls.resolv(level);
 		level.setLd(new LevelDrawer(level));
 		pres();
 	}

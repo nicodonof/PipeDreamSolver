@@ -16,11 +16,11 @@ public class LevelReader {
             String[] split = line.split(",");
             level.setRows(Integer.parseInt(split[0]));
             level.setCols(Integer.parseInt(split[1]));
-            char[][] matAux = new char[level.getRows()][level.getCols()];
-            for(int i = 0; i < level.getRows(); i++){
+            char[][] matAux = new char[level.getCols()][level.getRows()];
+            for(int i = 0; i < level.getCols(); i++){
             	String aux = bufferedReader.readLine();
-            	for (int j = 0; j < level.getCols(); j++){
-            		matAux[i][j] = aux.charAt(j);
+            	for (int j = 0; j < level.getRows(); j++){
+            		matAux[j][i] = aux.charAt(j);
             	}
             }
             level.setMat(matAux);
