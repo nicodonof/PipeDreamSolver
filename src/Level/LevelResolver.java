@@ -7,11 +7,15 @@ public class LevelResolver {
 	private List<int[]> list;
 	private int[][] aux = {{0,1},{0,-1},{-1,0},{1,0}};
 	private Level level;
-	private int numberOfPieces;
+	private int numberOfPieces, total;
+	private boolean progress = false;
+	private boolean finish = false;
 	
-	public LevelResolver(Level level){
+	
+	public LevelResolver(Level level, boolean progress){
 		this.level = level;
-		numberOfPieces = level.total();
+		this.progress = progress;
+		numberOfPieces = total = level.total();
 		list = new LinkedList<int[]>();		
 		list.add(new int[]{1,1,0,0,1});// N S E W
 		list.add(new int[]{2,1,0,1,0});
@@ -53,23 +57,38 @@ public class LevelResolver {
 	private void recurResolv(char[][] mat,int[] pos,int prevPos, int piecesLeft){		
 		//System.out.println("Entro al recur con :" + pos[0]+","+pos[1] + " prevpos " + prevPos);
 		if((pos[0] == -1) || (pos[1] == -1)	|| (pos[0] == level.getCols()) || (pos[1] == level.getRows())){
-			if(piecesLeft == 0){
+			System.out.println("gane con "+ (total - piecesLeft) + "piezas");
+			if(piecesLeft == 0 || piecesLeft == 1){
+				level.setMat(mat);
 				level.setSolMat(mat);
-				return;//EXIT
+				finish = true;
+				return;
 			}else if(piecesLeft < numberOfPieces){
-				System.out.println("gane con");
+				try {
+				    Thread.sleep(1000);
+				} catch(InterruptedException ex) {
+				    Thread.currentThread().interrupt();
+				}
+				level.setMat(mat);
 				numberOfPieces = piecesLeft;
+				level.setMat(mat);
 				level.setSolMat(mat);				
 			}
 			return;
 		}
-		for(int[] elem : list){
+		if(finish){
+			return;
+		}
+		if(progress){
 			try {
 			    Thread.sleep(100);
 			} catch(InterruptedException ex) {
 			    Thread.currentThread().interrupt();
 			}
 			level.setMat(mat);
+		}
+		for(int[] elem : list){
+			
 			if(elem[prevPos] == 1){
 				
 				int prevPosAux;
@@ -79,7 +98,7 @@ public class LevelResolver {
 				sumVector[1] += pos[1];
 				prevPosAux = sumVector[2];
 				if((mat[pos[0]][pos[1]] == ' ' || mat[pos[0]][pos[1]] == '7') && level.getPieces()[elem[0]-1] >= 1){
-					System.out.println(piecesLeft + " " + numberOfPieces);
+			//		System.out.println(piecesLeft + " " + numberOfPieces);
 					
 					char[][] matb = new char[level.getCols()][level.getRows()];
 					copy(mat,matb);
