@@ -14,13 +14,13 @@ public class LevelReader {
             BufferedReader bufferedReader = new BufferedReader(fileReader);
             line = bufferedReader.readLine();
             String[] split = line.split(",");
-            level.setRows(Integer.parseInt(split[0]));
-            level.setCols(Integer.parseInt(split[1]));
-            char[][] matAux = new char[level.getRows()][level.getCols()];
+            level.setCols(Integer.parseInt(split[0]));
+            level.setRows(Integer.parseInt(split[1]));
+            char[][] matAux = new char[level.getCols()][level.getRows()];
             for(int i = 0; i < level.getRows(); i++){
             	String aux = bufferedReader.readLine();
             	for (int j = 0; j < level.getCols(); j++){
-            		matAux[i][j] = aux.charAt(j);
+            		matAux[j][i] = aux.charAt(j);
             	}
             }
             level.setMat(matAux);
@@ -44,6 +44,7 @@ public class LevelReader {
         catch(IOException ex) {
         }
 		catch(Exception ex){
+			ex.printStackTrace();
 			return null;
 		}
 		return level;
