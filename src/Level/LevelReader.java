@@ -24,6 +24,7 @@ public class LevelReader {
             	}
             }
             level.setMat(matAux);
+            level.setSolMat(matAux);
             if(!level.check()){
             	bufferedReader.close();
             	return null;

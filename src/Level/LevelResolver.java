@@ -54,16 +54,24 @@ public class LevelResolver {
 		//System.out.println("Entro al recur con :" + pos[0]+","+pos[1] + " prevpos " + prevPos);
 		if((pos[0] == -1) || (pos[1] == -1)	|| (pos[0] == level.getCols()) || (pos[1] == level.getRows())){
 			if(piecesLeft == 0){
-				level.setMat(mat);
+				level.setSolMat(mat);
 				return;//EXIT
 			}else if(piecesLeft < numberOfPieces){
+				System.out.println("gane con");
 				numberOfPieces = piecesLeft;
-				level.setMat(mat);				
+				level.setSolMat(mat);				
 			}
 			return;
 		}
 		for(int[] elem : list){
+			try {
+			    Thread.sleep(100);
+			} catch(InterruptedException ex) {
+			    Thread.currentThread().interrupt();
+			}
+			level.setMat(mat);
 			if(elem[prevPos] == 1){
+				
 				int prevPosAux;
 				//System.out.println("Puedo meter -> Posicion:" + pos[0]+","+pos[1]+" elem " + elem[0] + "prevpos " + prevPos);
 				int[] sumVector = parser(elem.clone(),prevPos);				
@@ -71,6 +79,8 @@ public class LevelResolver {
 				sumVector[1] += pos[1];
 				prevPosAux = sumVector[2];
 				if((mat[pos[0]][pos[1]] == ' ' || mat[pos[0]][pos[1]] == '7') && level.getPieces()[elem[0]-1] >= 1){
+					System.out.println(piecesLeft + " " + numberOfPieces);
+					
 					char[][] matb = new char[level.getCols()][level.getRows()];
 					copy(mat,matb);
 					if(mat[pos[0]][pos[1]]=='7'){
@@ -80,11 +90,11 @@ public class LevelResolver {
 						prevPosAux = sumVector[2];
 						recurResolv(matb,sumVector,prevPosAux,piecesLeft - 1);
 					} else {
-					matb[pos[0]][pos[1]] = (char) ('0' + (char) elem[0]);
-					level.getPieces()[elem[0]-1] -= 1;
+						matb[pos[0]][pos[1]] = (char) ('0' + (char) elem[0]);
+						level.getPieces()[elem[0]-1] -= 1;
 					//print2(matb);
-					recurResolv(matb,sumVector,prevPosAux,piecesLeft - 1);
-					level.getPieces()[elem[0]-1] += 1;
+						recurResolv(matb,sumVector,prevPosAux,piecesLeft - 1);
+						level.getPieces()[elem[0]-1] += 1;
 					}
 				}
 			}
@@ -94,8 +104,8 @@ public class LevelResolver {
 	
 
 	public void print2(char[][] mat){
-		for(int i = 0; i < level.getCols(); i++){
-			for (int j = 0; j < level.getRows(); j++)
+		for(int i = 0; i < level.getRows(); i++){
+			for (int j = 0; j < level.getCols(); j++)
 				System.out.print(mat[j][i]);
 			System.out.println();
 		}

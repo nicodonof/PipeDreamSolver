@@ -11,7 +11,7 @@ import javax.swing.border.*;
 
 
 public class LevelDrawer {
-		private final JPanel gui;
+		private JPanel gui;
 	    private JPanel levelBoard;
 	    private ImageIcon[] imgs;
 	    
@@ -41,6 +41,7 @@ public class LevelDrawer {
 		}
 	    
 	    public void draw(Level level){
+	    	gui.removeAll();
 	    	char[][] mat = level.getMat();
 		    int aux = 0;
 	    	for(int i = 0; i < level.getRows();i++){

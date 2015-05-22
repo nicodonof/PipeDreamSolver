@@ -1,11 +1,12 @@
 package Level;
 
+import defaulter.Main;
 import defaulter.Piece;
 
 public class Level {
 	protected int rows;
 	protected int cols;
-	protected char[][] mat;
+	protected char[][] mat, solMat;
 	private int[] pieces, beggining;
 	private LevelDrawer ld;
 	
@@ -63,6 +64,10 @@ public class Level {
 	}
 	public void setMat(char[][] mat) {
 		this.mat = mat;
+		if(ld!=null){
+			ld.draw(this);
+			Main.pres();
+		}
 	}
 	public int[] getPieces() {
 		return pieces;
@@ -86,6 +91,16 @@ public class Level {
 	public void setBeggining(int[] beggining) {
 		this.beggining = beggining;
 	}
+	
+	public char[][] getSolMat() {
+		return solMat;
+	}
+
+	public void setSolMat(char[][] solMat) {
+		this.solMat = solMat;
+	}
+
+	
 	
 	
 }
