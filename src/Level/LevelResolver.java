@@ -24,7 +24,6 @@ public class LevelResolver {
 		list.add(new int[]{5,1,1,0,0});
 		list.add(new int[]{6,0,0,1,1});
 		list.add(new int[]{7,1,1,1,1});
-		
 	}
 	
 	public  boolean resolv(){
@@ -65,14 +64,14 @@ public class LevelResolver {
 				return;
 			}else if(piecesLeft < numberOfPieces){
 				try {
-				    Thread.sleep(1000);
+				    Thread.sleep(100);
 				} catch(InterruptedException ex) {
 				    Thread.currentThread().interrupt();
 				}
-				level.setMat(mat);
 				numberOfPieces = piecesLeft;
 				level.setMat(mat);
-				level.setSolMat(mat);				
+				level.setSolMat(mat);
+				print2(mat);
 			}
 			return;
 		}
@@ -81,7 +80,7 @@ public class LevelResolver {
 		}
 		if(progress){
 			try {
-			    Thread.sleep(100);
+			    Thread.sleep(500);
 			} catch(InterruptedException ex) {
 			    Thread.currentThread().interrupt();
 			}
@@ -108,10 +107,11 @@ public class LevelResolver {
 						sumVector[1] += pos[1];
 						prevPosAux = sumVector[2];
 						recurResolv(matb,sumVector,prevPosAux,piecesLeft - 1);
+						break;
 					} else {
 						matb[pos[0]][pos[1]] = (char) ('0' + (char) elem[0]);
 						level.getPieces()[elem[0]-1] -= 1;
-					//print2(matb);
+					//    print2(matb);
 						recurResolv(matb,sumVector,prevPosAux,piecesLeft - 1);
 						level.getPieces()[elem[0]-1] += 1;
 					}
