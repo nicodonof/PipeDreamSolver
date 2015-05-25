@@ -10,7 +10,8 @@ public class LevelResolver {
 	private int numberOfPieces, total;
 	private boolean progress = false;
 	private boolean finish = false;
-	
+	private boolean ignore = false;
+	public int cont = 0;
 	
 	public LevelResolver(Level level, boolean progress){
 		this.level = level;
@@ -56,7 +57,6 @@ public class LevelResolver {
 	private void recurResolv(char[][] mat,int[] pos,int prevPos, int piecesLeft){		
 		//System.out.println("Entro al recur con :" + pos[0]+","+pos[1] + " prevpos " + prevPos);
 		if((pos[0] == -1) || (pos[1] == -1)	|| (pos[0] == level.getCols()) || (pos[1] == level.getRows())){
-			System.out.println("gane con "+ (total - piecesLeft) + "piezas");
 			if(piecesLeft == 0 || piecesLeft == 1){
 				level.setMat(mat);
 				level.setSolMat(mat);
@@ -80,29 +80,39 @@ public class LevelResolver {
 		}
 		if(progress){
 			try {
-			    Thread.sleep(500);
+			    Thread.sleep(100);
 			} catch(InterruptedException ex) {
 			    Thread.currentThread().interrupt();
 			}
 			level.setMat(mat);
 		}
+		cont+=1;
+		if(cont%10000000 == 0){
+			level.setMat(mat);
+		}
 		for(int[] elem : list){
 			
 			if(elem[prevPos] == 1){
-				
 				int prevPosAux;
 				//System.out.println("Puedo meter -> Posicion:" + pos[0]+","+pos[1]+" elem " + elem[0] + "prevpos " + prevPos);
 				int[] sumVector = parser(elem.clone(),prevPos);				
 				sumVector[0] += pos[0];
 				sumVector[1] += pos[1];
 				prevPosAux = sumVector[2];
-				if((mat[pos[0]][pos[1]] == ' ' || mat[pos[0]][pos[1]] == '7') && level.getPieces()[elem[0]-1] >= 1){
+				if(elem[0] == 7){
+					if(pos[0]>0 && pos[0]<level.getCols() && pos[1]> 0 && pos[1]<level.getRows())
+						if((prevPosAux < 3 && (mat[pos[0]+1][pos[1]] != ' ' || mat[pos[0]-1][pos[1]] != ' ') && level.getPieces()[4] > 0) ||
+								(prevPosAux > 2 && (mat[pos[0]][pos[1]+1] != ' ' || mat[pos[0]][pos[1]-1] != ' ') && level.getPieces()[5] > 0))
+							ignore = true;
+				}
+				
+				if((mat[pos[0]][pos[1]] == ' ' || mat[pos[0]][pos[1]] == '7') && level.getPieces()[elem[0]-1] >= 1 && !ignore){
 			//		System.out.println(piecesLeft + " " + numberOfPieces);
 					
 					char[][] matb = new char[level.getCols()][level.getRows()];
 					copy(mat,matb);
 					if(mat[pos[0]][pos[1]]=='7'){
-						sumVector = parser(list.get(6),prevPos);
+						sumVector = parser(list.get(6).clone(),prevPos);
 						sumVector[0] += pos[0];
 						sumVector[1] += pos[1];
 						prevPosAux = sumVector[2];
@@ -116,6 +126,7 @@ public class LevelResolver {
 						level.getPieces()[elem[0]-1] += 1;
 					}
 				}
+				ignore = false;
 			}
 		}
 	}

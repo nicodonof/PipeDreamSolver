@@ -28,10 +28,15 @@ public class Main {
 		level.getLd().draw(level);
 		pres();
 		LevelResolver ls = new LevelResolver(level,progress);
+		long startTime = System.nanoTime();
 		ls.resolv();
+		long stopTime = System.nanoTime();
+		System.out.println((stopTime - startTime) / Math.pow(10, 9));
 		level.getLd().draw(level);
 		level.setMat(level.getSolMat());
+		System.out.println("termino");
 		ls.print2(level.getSolMat());
+		System.out.println(ls.cont);
 	}
 		
 	public static void pres(){
