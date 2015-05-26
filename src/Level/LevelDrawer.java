@@ -42,11 +42,12 @@ public class LevelDrawer {
 	            e.printStackTrace();
 	        }
 	    	draw(level);
-	    	frameShow();
+	    	updateFrame();
 	    	f.setVisible(true);
+	    	f.setResizable(false);
 		}
 	    
-	    public void frameShow(){
+	    public void updateFrame(){
 			Runnable r = new Runnable() {
 				public void run() {
 	                f.add(gui);

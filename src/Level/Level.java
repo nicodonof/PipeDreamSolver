@@ -66,7 +66,7 @@ public class Level {
 		this.mat = mat;
 		if(ld!=null){
 			ld.draw(this);
-			ld.frameShow();
+			ld.updateFrame();
 		}
 	}
 	public int[] getPieces() {
