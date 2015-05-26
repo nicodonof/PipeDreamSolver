@@ -23,14 +23,13 @@ public class Main {
 			level.print();
 		}
 		f = new JFrame("level");
-		f.setVisible(true);
 		level.setLd(new LevelDrawer(level));
-		level.getLd().draw(level);
-		pres();
-		LevelResolver ls = new LevelResolver(level,progress);
+		
+		LevelResolver ls = new LevelResolver(level,progress,true);
 		long startTime = System.nanoTime();
 		ls.resolv();
 		long stopTime = System.nanoTime();
+		
 		System.out.println((stopTime - startTime) / Math.pow(10, 9));
 		level.getLd().draw(level);
 		level.setMat(level.getSolMat());
@@ -39,18 +38,7 @@ public class Main {
 		System.out.println(ls.cont);
 	}
 		
-	public static void pres(){
-		Runnable r = new Runnable() {
-			public void run() {
-                f.add(level.getLd().getGui());
-                f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                f.pack();
-                f.setMinimumSize(f.getSize());
-                
-            }
-        };
-        SwingUtilities.invokeLater(r);
-	}
+	
 }
 
 

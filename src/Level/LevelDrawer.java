@@ -11,11 +11,15 @@ import javax.swing.border.*;
 
 
 public class LevelDrawer {
+		private static Level level;
 		private JPanel gui;
 	    private JPanel levelBoard;
 	    private ImageIcon[] imgs;
-	    
+	    private static JFrame f;
+		
 	    public LevelDrawer(Level level) {
+	    	f = new JFrame("level");
+	    	LevelDrawer.level = level;
 	    	gui = new JPanel(new GridLayout(level.getRows(), level.getCols()));
 	    	imgs = new ImageIcon[19];
 	    	try {
@@ -37,7 +41,22 @@ public class LevelDrawer {
 	        } catch (IOException e) {
 	            e.printStackTrace();
 	        }
-		    draw(level);
+	    	draw(level);
+	    	frameShow();
+	    	f.setVisible(true);
+		}
+	    
+	    public void frameShow(){
+			Runnable r = new Runnable() {
+				public void run() {
+	                f.add(gui);
+	                f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+	                f.pack();
+	                f.setMinimumSize(f.getSize());
+	                
+	            }
+	        };
+	        SwingUtilities.invokeLater(r);
 		}
 	    
 	    public void draw(Level level){

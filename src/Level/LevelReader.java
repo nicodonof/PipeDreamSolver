@@ -41,6 +41,8 @@ public class LevelReader {
             bufferedReader.close();
         }
         catch(FileNotFoundException ex) {
+        	ex.printStackTrace();
+        	return null;
         }
         catch(IOException ex) {
         }
