@@ -12,15 +12,17 @@ import javax.swing.border.*;
 
 public class LevelDrawer {
 		private static Level level;
-		private JPanel gui;
+		private JPanel gui,gui2;
 	    private JPanel levelBoard;
 	    private ImageIcon[] imgs;
-	    private static JFrame f;
-		
+	    private static JFrame f,g;
+	    private JLabel piece1;
 	    public LevelDrawer(Level level) {
 	    	f = new JFrame("level");
+	    	g = new JFrame("frame2");
 	    	LevelDrawer.level = level;
 	    	gui = new JPanel(new GridLayout(level.getRows(), level.getCols()));
+	    	gui2 = new JPanel(new GridLayout(level.getRows(), level.getCols()));
 	    	imgs = new ImageIcon[19];
 	    	try {
 	            BufferedImage sprite = ImageIO.read(new File("Pipes01.png"));
@@ -37,12 +39,13 @@ public class LevelDrawer {
 	            	imgs[i+12] = new ImageIcon(sprite.getSubimage(x, y+96, width, height));
 	    	    }
 	  		    imgs[18] = new ImageIcon("Nada.png");
-	    
+	  		    piece1 = new JLabel(""+level.getPieces()[0]);
 	        } catch (IOException e) {
 	            e.printStackTrace();
 	        }
 	    	draw(level);
 	    	updateFrame();
+	    	g.setVisible(true);
 	    	f.setVisible(true);
 	    	f.setResizable(false);
 		}
@@ -50,7 +53,11 @@ public class LevelDrawer {
 	    public void updateFrame(){
 			Runnable r = new Runnable() {
 				public void run() {
-	                f.add(gui);
+	                g.add(gui2);
+	                g.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+	                g.pack();
+	                g.setMinimumSize(g.getSize());
+					f.add(gui);
 	                f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	                f.pack();
 	                f.setMinimumSize(f.getSize());
@@ -62,9 +69,11 @@ public class LevelDrawer {
 	    
 	    public void draw(Level level){
 	    	gui.removeAll();
+	    	piece1.setText(""+level.getPieces()[0]);
+	    	gui2.add(piece1);
 	    	char[][] mat = level.getMat();
 		    int aux = 0;
-	    	for(int i = 0; i < level.getRows();i++){
+		 	for(int i = 0; i < level.getRows();i++){
 	    		for(int j = 0; j < level.getCols(); j++){
 	    			switch(mat[j][i]){
 	    			case '#': 
