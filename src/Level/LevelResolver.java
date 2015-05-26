@@ -91,8 +91,8 @@ public class LevelResolver {
 				int[] vecPosInicial = list.get(mat[posInicial[0]][posInicial[1]] - '0');
 				int[] vecPosFinal = list.get(mat[posFinal[0]][posFinal[1]] - '0');
 				int[][] littleVec = {{0,-1},{0,1},{1,0},{-1,0}};
-				if(firstPiece[prevPos] == 1 && firstPiece[0] != mat[posInicial[0]][posInicial[1]] - '0' && firstPiece[0] != 7){
-					if(secondPiece[postPos] == 1 && secondPiece[0] != mat[posFinal[0]][posFinal[1]] - '0' && secondPiece[0] != 7){
+				if(firstPiece[prevPos] == 1 && firstPiece[0] != mat[posInicial[0]][posInicial[1]] - '0' /*&& firstPiece[0] != 7*/){
+					if(secondPiece[postPos] == 1 && secondPiece[0] != mat[posFinal[0]][posFinal[1]] - '0' /*&& secondPiece[0] != 7*/){
 						char[][] matAux = new char[level.getCols()][level.getRows()];
 						copy(mat,matAux);
 						matAux[posInicial[0]][posInicial[1]] =(char) ('0' + firstPiece[0]);
@@ -104,15 +104,14 @@ public class LevelResolver {
 						}
 						auxer[0] += posInicial[0];
 						auxer[1] += posInicial[1];
-						recurComplete(matAux,auxer,posFinal, auxer[2], numberOfPieces);
-						return;
+						recurComplete(matAux,auxer,posFinal, auxer[2], numberOfPieces,7);
 					}
 				}							
 			}
 		}
 	}
 	
-	private void recurComplete(char[][] mat,int[] pos,int[] posFinal,int prevPos, int piecesLeft){		
+	private void recurComplete(char[][] mat,int[] pos,int[] posFinal,int prevPos, int piecesLeft, int maxSteps){		
 		if((pos[0] == -1) || (pos[1] == -1)	|| (pos[0] == level.getCols()) || (pos[1] == level.getRows())){
 			//Me fui del tablero
 			return;
@@ -120,7 +119,10 @@ public class LevelResolver {
 		if(finish){
 			return;
 		}
-		
+		if(maxSteps <= 0){
+			return;
+		}
+			
 		if(progress){
 			try {
 			    Thread.sleep(TIME);
@@ -159,7 +161,7 @@ public class LevelResolver {
 						sumVector[0] += pos[0];
 						sumVector[1] += pos[1];
 						prevPosAux = sumVector[2];
-						recurComplete(matb,sumVector,posFinal,prevPosAux,piecesLeft - 1);
+						recurComplete(matb,sumVector,posFinal,prevPosAux,piecesLeft - 1,maxSteps);
 						break;
 					} else {
 						matb[pos[0]][pos[1]] = (char) ('0' + (char) elem[0]);
@@ -174,7 +176,7 @@ public class LevelResolver {
 							return;
 						}
 						
-						recurComplete(matb,sumVector,posFinal,prevPosAux,piecesLeft - 1);
+						recurComplete(matb,sumVector,posFinal,prevPosAux,piecesLeft - 1,maxSteps - 1);
 						level.getPieces()[elem[0]-1] += 1;
 					}
 				}

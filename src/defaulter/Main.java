@@ -14,8 +14,8 @@ public class Main {
 	
 	public static void main(String[] args/*agregar q se pase por parametro*/) {
 		level = null;
-		boolean progress = false;
-		level = LevelReader.loadLevel(new Level(),"test2.txt");
+		boolean progress = true;
+		level = LevelReader.loadLevel(new Level(),"test4.txt");
 		if(level == null){
 			System.out.println("Archivo Mal Formado");
 			return;
