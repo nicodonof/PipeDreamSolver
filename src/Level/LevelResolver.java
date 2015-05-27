@@ -6,7 +6,7 @@ import java.util.List;
 import defaulter.Piece;
 
 public class LevelResolver {
-	private static final long TIME = 100;
+	private static final long TIME = 700;
 	private List<Piece> list;
 	private int[][] aux = {{0,1},{0,-1},{-1,0},{1,0}};
 	private Level level;
@@ -85,15 +85,16 @@ public class LevelResolver {
 			print2(neighbAux.mat);
 			neighbours.add(neighbAux);
 		}
-		if((secondPos[0]  == 0) || (secondPos[1]  == 0)	|| (secondPos[0] == level.getCols()) || (secondPos[1] == level.getRows()))
-			return; // Todo: esto se podria hacer en menos comparaciones
+		
 		Piece pieceSecondPos = list.get(solution[secondPos[0]][secondPos[1]] - '1');
 		int secondPosPrevPos = pieceSecondPos.otherEnd(postPos);
 
 		int auxer[] = pieceSecondPos.parser(secondPosPrevPos, secondPos);
+		if((auxer[0] == -1) || (auxer[1]  == -1)	|| (auxer[0] == level.getCols()) || (auxer[1] == level.getRows()))
+			return; // Todo: esto se podria hacer en menos comparaciones*/
 		postPos = list.get(solution[auxer[0]][auxer[1]] - '1').otherEnd(auxer[2]);
 		
-		stepHillNeighbour(solution, secondPos, secondPosPrevPos , auxer ,postPos,neighbours);
+		stepHillNeighbour(solution, secondPos.clone(), secondPosPrevPos , auxer.clone() ,postPos,neighbours);
 	}
 	
 	private class Neighbour{
@@ -129,7 +130,7 @@ public class LevelResolver {
 									
 									int[] auxer = firstPiece.parser(prevPos, posInicial);
 																
-									if(recurResolv(matAux,auxer,posFinal, auxer[2], level.getPieces(),numberOfPieces,7)){
+									if(recurResolv(matAux,auxer,posFinal, auxer[2], level.getPieces(),numberOfPieces,4) != -1){
 										return new Neighbour(level.getMat(),4);
 									}																	
 								}
@@ -138,13 +139,12 @@ public class LevelResolver {
 					}
 				}										
 			}
-		}
-		System.out.println("SALGO DE NEIGHBOUR");
+		}		
 		return null;
 	}
 	
 	
-	private boolean recurResolv(char[][] mat,int[] pos, int[] posFinal, int prevPos, int[] pieces, int piecesLeft, int maxSteps){		
+	private int recurResolv(char[][] mat,int[] pos, int[] posFinal, int prevPos, int[] pieces, int piecesLeft, int maxSteps){		
 		if((pos[0] == -1) || (pos[1] == -1)	|| (pos[0] == level.getCols()) || (pos[1] == level.getRows())){
 			if(!hillClimbing){
 				if(piecesLeft == 0 /*|| piecesLeft == 1 fijarse caso mas 1 salida*/){
@@ -152,7 +152,7 @@ public class LevelResolver {
 					numberOfPieces = piecesLeft;
 					level.setMat(mat);
 					level.setSolMat(mat);
-					return true;
+					return piecesLeft;
 				} 
 				if(piecesLeft < numberOfPieces){
 					numberOfPieces = piecesLeft;
@@ -166,17 +166,17 @@ public class LevelResolver {
 				print2(mat);
 				level.setMat(mat);
 				level.setSolMat(mat);
-				return true;
+				return piecesLeft;
 			}
-			return false;
+			return -1;
 		}
 		
 		if(hillClimbing && maxSteps <= 0 && !firstSol)
-			return false;
+			return -1;
 		
-		if(finish){
-			return true;
-		}
+		/*if(finish){
+			return piecesLeft;
+		}*/
 		if(progress){
 			try {
 			    Thread.sleep(TIME);
@@ -189,12 +189,11 @@ public class LevelResolver {
 		if(cont%10000000 == 0){
 			level.setMat(mat);
 		}
-		boolean chain = false;
+		int chain = -1;
 		for(Piece elem : list){			
-			if(!finish && elem.getDirecciones()[prevPos] == 1){
-				int prevPosAux;
+			if(!finish && elem.getDirecciones()[prevPos] == 1){				
 				int[] sumVector = elem.parser(prevPos,pos);				
-				prevPosAux = sumVector[2];
+				int prevPosAux = sumVector[2];
 				if(elem.getIdPieza() == 7){
 					if(pos[0]>0 && pos[0]<level.getCols()-1 && pos[1]> 0 && pos[1]<level.getRows()-1){
 						if((prevPosAux < 3 && ((mat[pos[0]+1][pos[1]] != ' ' && mat[pos[0]+1][pos[1]] != '7') || (mat[pos[0]-1][pos[1]] != ' ' && mat[pos[0]-1][pos[1]] != '7')) && level.getPieces()[4] > 0) ||
@@ -224,7 +223,7 @@ public class LevelResolver {
 							//Chequeo si me estoy chocando bien
 							level.setMat(matb);
 							finish = true;
-							return true;
+							return piecesLeft;
 						}
 						chain = recurResolv(matb,sumVector,posFinal,prevPosAux,pieces,piecesLeft - 1,maxSteps-1);
 						level.getPieces()[elem.getIdPieza()-1] += 1;
