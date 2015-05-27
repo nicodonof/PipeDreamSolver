@@ -25,7 +25,7 @@ public class Main {
 		f = new JFrame("level");
 		level.setLd(new LevelDrawer(level));
 		
-		LevelResolver ls = new LevelResolver(level,progress,false);
+		LevelResolver ls = new LevelResolver(level,progress,true);
 		long startTime = System.nanoTime();
 		ls.resolv();
 		long stopTime = System.nanoTime();

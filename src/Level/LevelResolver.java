@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class LevelResolver {
-	private static final long TIME = 150;
+	private static final long TIME = 80;
 	private List<int[]> list;
 	private int[][] aux = {{0,1},{0,-1},{-1,0},{1,0}};
 	private Level level;
@@ -90,7 +90,7 @@ public class LevelResolver {
 			print2(neighbAux.mat);
 			neighbours.add(neighbAux);
 		}				
-		if((secondPos[0] == -1) || (secondPos[1] == -1)	|| (secondPos[0] == level.getCols()) || (secondPos[1] == level.getRows()))
+		if((secondPos[0]  == 0) || (secondPos[1]  == 0)	|| (secondPos[0] == level.getCols()) || (secondPos[1] == level.getRows()))
 			return; // Todo: esto se podria hacer en menos comparaciones
 		int secondPosPrevPos = 0;
 		int[] vectorSecondPos = list.get(solution[secondPos[0]][secondPos[1]] - '1');
@@ -103,10 +103,11 @@ public class LevelResolver {
 		
 		auxer[0] += secondPos[0];
 		auxer[1] += secondPos[1];
+		System.out.println("auxer del neighbour: " + auxer[0] + " " + auxer[1]);
 		for(int i=1;i<5;i++){
 			if(list.get(solution[auxer[0]][auxer[1]] - '1')[i] == 1 && i!= auxer[2]){
 				postPos = i;
-			}				
+			}
 		}
 		System.out.println("Entro al prox con, pp: " + auxer[2]);
 		stepHillNeighbour(solution, secondPos, secondPosPrevPos , auxer ,postPos,neighbours);
@@ -170,12 +171,17 @@ public class LevelResolver {
 	private boolean recurResolv(char[][] mat,int[] pos, int[] posFinal, int prevPos, int[] pieces, int piecesLeft, int maxSteps){		
 		if((pos[0] == -1) || (pos[1] == -1)	|| (pos[0] == level.getCols()) || (pos[1] == level.getRows())){
 			if(!hillClimbing){
-				if(piecesLeft == 0 /*|| piecesLeft == 1 fijarse caso mas 1 salida*/ || piecesLeft < numberOfPieces){
+				if(piecesLeft == 0 /*|| piecesLeft == 1 fijarse caso mas 1 salida*/){
+					finish = true;
 					numberOfPieces = piecesLeft;
 					level.setMat(mat);
 					level.setSolMat(mat);
-					finish = true;
 					return true;
+				} 
+				if(piecesLeft < numberOfPieces){
+					numberOfPieces = piecesLeft;
+					level.setMat(mat);
+					level.setSolMat(mat);
 				}
 			}
 			if(firstSol){
@@ -233,7 +239,7 @@ public class LevelResolver {
 						sumVector[0] += pos[0];
 						sumVector[1] += pos[1];
 						prevPosAux = sumVector[2];
-						recurResolv(matb,sumVector,posFinal,prevPosAux,pieces,piecesLeft - 1,maxSteps);
+						chain = recurResolv(matb,sumVector,posFinal,prevPosAux,pieces,piecesLeft - 1,maxSteps);
 						break;
 					} else {
 						matb[pos[0]][pos[1]] = (char) ('0' + (char) elem[0]);
@@ -247,7 +253,7 @@ public class LevelResolver {
 							finish = true;
 							return true;
 						}
-						recurResolv(matb,sumVector,posFinal,prevPosAux,pieces,piecesLeft - 1,maxSteps-1);
+						chain = recurResolv(matb,sumVector,posFinal,prevPosAux,pieces,piecesLeft - 1,maxSteps-1);
 						level.getPieces()[elem[0]-1] += 1;
 					}
 				}
