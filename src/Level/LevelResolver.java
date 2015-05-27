@@ -6,7 +6,7 @@ import java.util.List;
 import defaulter.Piece;
 
 public class LevelResolver {
-	private static final long TIME = 700;
+	private static final long TIME = 100;
 	private List<Piece> list;
 	private int[][] aux = {{0,1},{0,-1},{-1,0},{1,0}};
 	private Level level;
@@ -78,7 +78,7 @@ public class LevelResolver {
 		return false;
 	}
 	
-	private void stepHillNeighbour(char[][] solution,int[] firstPos,int prevPos,int[] secondPos, int postPos,List<Neighbour> neighbours){
+	private void stepHillNeighbour(char[][] solution,int[] firstPos,int prevPos,int[] secondPos, int postPos,List<Neighbour> neighbours){		
 		Neighbour neighbAux = getNeighbour(solution, firstPos,prevPos, secondPos,postPos);
 		if(neighbAux != null){
 			System.out.println("Encontre un neighbour saliendo de: " + firstPos[0] + " " + firstPos[1] + ", y llegando a: "  + secondPos[0] + " " + secondPos[1]);
@@ -94,7 +94,7 @@ public class LevelResolver {
 			return; // Todo: esto se podria hacer en menos comparaciones*/
 		postPos = list.get(solution[auxer[0]][auxer[1]] - '1').otherEnd(auxer[2]);
 		
-		stepHillNeighbour(solution, secondPos.clone(), secondPosPrevPos , auxer.clone() ,postPos,neighbours);
+		stepHillNeighbour(solution, secondPos, secondPosPrevPos , auxer ,postPos,neighbours);
 	}
 	
 	private class Neighbour{
@@ -117,8 +117,8 @@ public class LevelResolver {
 					if(firstPiece.getDirecciones()[prevPos] == 1 && firstPiece.getIdPiezaChar() != mat[posInicial[0]][posInicial[1]] && firstPiece.getIdPieza() != 7){
 						if(secondPiece.getDirecciones()[postPos] == 1 && secondPiece.getIdPiezaChar() != mat[posFinal[0]][posFinal[1]] && secondPiece.getIdPieza() != 7){
 							int[] rexua  = secondPiece.parser(postPos,posFinal);
-							if(rexua[0]>0 && rexua[0]<level.getCols()-1 && rexua[1]> 0 && rexua[1]<level.getRows()-1){
-								if(level.getMat()[rexua[0]][rexua[1]] == ' ' || level.getMat()[rexua[0]][rexua[1]] == '7'){
+							if(rexua[0]>=0 && rexua[0]<level.getCols() && rexua[1]>= 0 && rexua[1]<level.getRows()){
+								if(mat[rexua[0]][rexua[1]] == ' ' || mat[rexua[0]][rexua[1]] == '7'){
 									char[][] matAux = new char[level.getCols()][level.getRows()];
 									copy(mat,matAux);
 									level.getPieces()[matAux[posInicial[0]][posInicial[1]] - '1'] += 1;
@@ -130,7 +130,7 @@ public class LevelResolver {
 									
 									int[] auxer = firstPiece.parser(prevPos, posInicial);
 																
-									if(recurResolv(matAux,auxer,posFinal, auxer[2], level.getPieces(),numberOfPieces,4) != -1){
+									if(recurResolv(matAux,auxer,posFinal.clone(), auxer[2], level.getPieces(),numberOfPieces,4) != -1){
 										return new Neighbour(level.getMat(),4);
 									}																	
 								}
