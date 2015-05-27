@@ -129,7 +129,6 @@ public class LevelResolver {
 									
 									int[] auxer = firstPiece.parser(prevPos, posInicial);
 																
-									
 									if(recurResolv(matAux,auxer,posFinal, auxer[2], level.getPieces(),numberOfPieces,7)){
 										return new Neighbour(level.getMat(),4);
 									}																	
@@ -252,28 +251,5 @@ public class LevelResolver {
 			for (int j = 0; j < level.getRows(); j++)
 				matb[i][j] = mat[i][j];
 		}
-	}
-	
-	private int[] parser(int[] vector,int prevPos){
-		//
-		vector[prevPos] = 0; 
-		int[] auxer = new int[3];
-		if(vector[0] == 7){
-			auxer[0] = aux[prevPos - 1][0];
-			auxer[1] = aux[prevPos - 1][1];
-		}else{
-			auxer[0] = vector[3] - vector[4];
-			auxer[1] = -vector[1] + vector[2];
-		}
-		
-		if (auxer[0] == 1)
-			auxer[2] = 4;
-		else if (auxer[0] == -1)
-			auxer[2] = 3;
-		else if (auxer[1] == 1)
-			auxer[2] = 1;
-		else
-			auxer[2] = 2;
-		return auxer;
 	}
 }
