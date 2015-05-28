@@ -10,7 +10,7 @@ public class LevelResolver {
 	private List<Piece> list;
 	private int[][] aux = {{0,1},{0,-1},{-1,0},{1,0}};
 	private Level level;
-	private int numberOfPieces, total;
+	private int maxLenght;
 	private boolean progress = false;
 	private boolean finish = false;
 	private boolean ignore = false;
@@ -21,7 +21,7 @@ public class LevelResolver {
 	public LevelResolver(Level level, boolean progress, boolean hillClimbing){
 		this.level = level;
 		this.progress = progress;
-		numberOfPieces = total = level.total();
+		maxLenght = level.total();
 		list = new LinkedList<Piece>();		
 		list.add(new Piece(1,new int[]{1,0,0,1}));// N S E W
 		list.add(new Piece(2,new int[]{1,0,1,0}));
@@ -57,31 +57,48 @@ public class LevelResolver {
 			prevPos= 2;
 			break;	
 		}
-		recurResolv(level.getMat(), aux, null, prevPos, level.getPieces(),numberOfPieces,-2);	
+		recurResolv(level.getMat(), aux, null, prevPos, level.getPieces(),maxLenght,-2);	
 		firstSol = false;
 		if(hillClimbing){
 			finish = false;
 			int[] sumVector = list.get(level.getSolMat()[aux[0]][aux[1]] - '1').parser(prevPos,aux);
 						
 						
-			List<Neighbour> neighbours = new LinkedList<Neighbour>();
-			stepHillNeighbour(level.getSolMat(),aux,prevPos,sumVector,list.get(level.getSolMat()[sumVector[0]][sumVector[1]] - '1').otherEnd(sumVector[2]),neighbours);			
-			int max = 0;
-			Neighbour maxNeighbour;
-			for(Neighbour neighbour : neighbours){
-				if(neighbour.length > max){
-					max = neighbour.length;
-					maxNeighbour = neighbour;
-				}
-			}
+			hillclimbing(level.getSolMat(),aux,prevPos,sumVector,list.get(level.getSolMat()[sumVector[0]][sumVector[1]] - '1').otherEnd(sumVector[2]));
+			
 		}
 		return false;
 	}
 	
+	private void hillclimbing(char[][] solution,int[] firstPos,int prevPos,int[] secondPos, int postPos ) {
+		// TODO Auto-generated method stub
+		List<Neighbour> neighbours = new LinkedList<Neighbour>();
+		
+		
+		stepHillNeighbour(solution,firstPos,prevPos,secondPos,postPos,neighbours);			
+		int max = 0;
+		Neighbour maxNeighbour = null;
+		if(neighbours.isEmpty()){
+			level.setSolMat(level.getMat());
+			return;
+		}
+		for(Neighbour neighbour : neighbours){
+			if(neighbour.length > max){
+				max = neighbour.length;
+				maxNeighbour = neighbour;
+			}
+		}
+		level.setMat(maxNeighbour.mat);
+		Piece firstPiece = list.get(level.getMat()[firstPos[0]][firstPos[1]] - '1');
+		int[] auxer = firstPiece.parser(prevPos, firstPos);
+		hillclimbing(level.getMat(), firstPos, prevPos, auxer, firstPiece.otherEnd(auxer[2]));
+	}
+
 	private void stepHillNeighbour(char[][] solution,int[] firstPos,int prevPos,int[] secondPos, int postPos,List<Neighbour> neighbours){		
 		Neighbour neighbAux = getNeighbour(solution, firstPos,prevPos, secondPos,postPos);
 		if(neighbAux != null){
 			System.out.println("Encontre un neighbour saliendo de: " + firstPos[0] + " " + firstPos[1] + ", y llegando a: "  + secondPos[0] + " " + secondPos[1]);
+			System.out.println("Peso: " + neighbAux.length);
 			print2(neighbAux.mat);
 			neighbours.add(neighbAux);
 		}
@@ -110,7 +127,7 @@ public class LevelResolver {
 	
 	private Neighbour getNeighbour(char[][] mat,int[] posInicial,int prevPos,int[] posFinal,int postPos){
 		finish = false;
-		System.out.println("Entro a testear neighbours " + posInicial[0] + " " + posInicial[1] + " " + prevPos + " , y final " + posFinal[0] + " " + posFinal[1] + " " +postPos);
+		//System.out.println("Entro a testear neighbours " + posInicial[0] + " " + posInicial[1] + " " + prevPos + " , y final " + posFinal[0] + " " + posFinal[1] + " " +postPos);
 		for(Piece firstPiece : list){
 			for(Piece secondPiece : list){
 				if(level.getPieces()[firstPiece.getIdPieza()-1]>0 && level.getPieces()[secondPiece.getIdPieza()-1]>0){
@@ -129,9 +146,9 @@ public class LevelResolver {
 									level.getPieces()[secondPiece.getIdPieza()-1] -= 1;
 									
 									int[] auxer = firstPiece.parser(prevPos, posInicial);
-																
-									if(recurResolv(matAux,auxer,posFinal.clone(), auxer[2], level.getPieces(),numberOfPieces,4) != -1){
-										return new Neighbour(level.getMat(),4);
+									int lenght = recurResolv(matAux,auxer,posFinal.clone(), auxer[2], level.getPieces(),maxLenght,4);						
+									if(lenght != -1){
+										return new Neighbour(level.getMat(),5);
 									}																	
 								}
 							}
@@ -149,15 +166,15 @@ public class LevelResolver {
 			if(!hillClimbing){
 				if(piecesLeft == 0 /*|| piecesLeft == 1 fijarse caso mas 1 salida*/){
 					finish = true;
-					numberOfPieces = piecesLeft;
+					maxLenght = piecesLeft;
 					level.setMat(mat);
 					level.setSolMat(mat);
-					return piecesLeft;
+					return 1;
 				} 
-				if(piecesLeft < numberOfPieces){
-					numberOfPieces = piecesLeft;
+				if(piecesLeft < maxLenght){
+					maxLenght = piecesLeft;
 					level.setMat(mat);
-					level.setSolMat(mat);
+					level.setSolMat(mat); 
 				}
 			}
 			if(firstSol){
@@ -166,7 +183,7 @@ public class LevelResolver {
 				print2(mat);
 				level.setMat(mat);
 				level.setSolMat(mat);
-				return piecesLeft;
+				return 1;
 			}
 			return -1;
 		}
@@ -211,7 +228,7 @@ public class LevelResolver {
 					if(mat[pos[0]][pos[1]]=='7'){
 						sumVector = list.get(6).parser(prevPos,pos);
 						prevPosAux = sumVector[2];
-						chain = recurResolv(matb,sumVector,posFinal,prevPosAux,pieces,piecesLeft - 1,maxSteps); 
+						chain = recurResolv(matb,sumVector,posFinal,prevPosAux,pieces,piecesLeft + 1,maxSteps); 
 						break;
 					} else {
 						matb[pos[0]][pos[1]] = (char) ('0' + (char) elem.getIdPieza());//Todo: hacer funcion getIdPiezaChar
@@ -223,9 +240,9 @@ public class LevelResolver {
 							//Chequeo si me estoy chocando bien
 							level.setMat(matb);
 							finish = true;
-							return piecesLeft;
+							return 1;
 						}
-						chain = recurResolv(matb,sumVector,posFinal,prevPosAux,pieces,piecesLeft - 1,maxSteps-1);
+						chain = recurResolv(matb,sumVector,posFinal,prevPosAux,pieces,piecesLeft + 1,maxSteps-1);
 						level.getPieces()[elem.getIdPieza()-1] += 1;
 					}
 				}
