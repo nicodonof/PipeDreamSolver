@@ -11,16 +11,14 @@ import javax.swing.border.*;
 
 
 public class LevelDrawer {
-		private static Level level;
 		private JPanel gui,gui2;
 	    private JPanel levelBoard;
 	    private ImageIcon[] imgs;
 	    private static JFrame f,g;
 	    private JLabel piece1;
-	    public LevelDrawer(Level level) {
+	    public LevelDrawer(Level level,LevelResolver levelResolver) {
 	    	f = new JFrame("level");
 	    	g = new JFrame("frame2");
-	    	LevelDrawer.level = level;
 	    	gui = new JPanel(new GridLayout(level.getRows(), level.getCols()));
 	    	gui2 = new JPanel(new GridLayout(level.getRows(), level.getCols()));
 	    	imgs = new ImageIcon[19];
@@ -39,7 +37,7 @@ public class LevelDrawer {
 	            	imgs[i+12] = new ImageIcon(sprite.getSubimage(x, y+96, width, height));
 	    	    }
 	  		    imgs[18] = new ImageIcon("Nada.png");
-	  		    piece1 = new JLabel(""+level.getPieces()[0]);
+	  		    piece1 = new JLabel("Steps made: "+ levelResolver.partialSolutionSteps);
 	        } catch (IOException e) {
 	            e.printStackTrace();
 	        }
@@ -67,9 +65,9 @@ public class LevelDrawer {
 	        SwingUtilities.invokeLater(r);
 		}
 	    
-	    public void draw(Level level){
+	    public void draw(Level level ){
 	    	gui.removeAll();
-	    	piece1.setText(""+level.getPieces()[0]);
+	    	piece1.setText(""+ 3);
 	    	gui2.add(piece1);
 	    	char[][] mat = level.getMat();
 		    int aux = 0;

@@ -15,7 +15,7 @@ public class Main {
 	public static void main(String[] args/*agregar q se pase por parametro*/) {
 		level = null;
 		boolean progress = true;
-		level = LevelReader.loadLevel(new Level(),"test2.txt");
+		level = LevelReader.loadLevel(new Level(),"test4.txt");
 		if(level == null){
 			System.out.println("Archivo Mal Formado");
 			return;
@@ -23,9 +23,10 @@ public class Main {
 			level.print();
 		}
 		f = new JFrame("level");
-		level.setLd(new LevelDrawer(level));
+		LevelResolver ls = new LevelResolver(level,false,true);
+		level.setLd(new LevelDrawer(level,ls));
 		
-		LevelResolver ls = new LevelResolver(level,progress,true);
+		
 		long startTime = System.nanoTime();
 		ls.resolv();
 		long stopTime = System.nanoTime();
