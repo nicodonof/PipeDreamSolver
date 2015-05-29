@@ -6,10 +6,10 @@ import java.util.List;
 import defaulter.Piece;
 
 public class LevelResolver {
-	private static final long TIME = 500;
+	private static final long TIME = 50;
 	private static final int MAXSTEPSHILLCLIMBING = 6;
 	private static int MAXLENGHT;
-	private List<Piece> list;
+	private PieceVector<Character, Piece> pieceTypes;
 	private Level level;
 	public int partialSolutionSteps;
 	private boolean progress = false;
@@ -23,18 +23,20 @@ public class LevelResolver {
 		this.level = level;
 		this.progress = progress;
 		MAXLENGHT = level.total();
-		list = new LinkedList<Piece>();		
-		list.add(new Piece(1,new int[]{1,0,0,1}));// N S E W
-		list.add(new Piece(2,new int[]{1,0,1,0}));
-		list.add(new Piece(3,new int[]{0,1,1,0}));
-		list.add(new Piece(4,new int[]{0,1,0,1}));
-		list.add(new Piece(5,new int[]{1,1,0,0}));
-		list.add(new Piece(6,new int[]{0,0,1,1}));
-		list.add(new Piece(7,new int[]{1,1,1,1}));
+		pieceTypes = new PieceVector<Character, Piece>();
+		pieceTypes.put('1',new Piece(1,new int[]{1,0,0,1}));// N S E W
+		pieceTypes.put('2',new Piece(2,new int[]{1,0,1,0}));
+		pieceTypes.put('3',new Piece(3,new int[]{0,1,1,0}));
+		pieceTypes.put('4',new Piece(4,new int[]{0,1,0,1}));
+		pieceTypes.put('5',new Piece(5,new int[]{1,1,0,0}));
+		pieceTypes.put('6',new Piece(6,new int[]{0,0,1,1}));
+		pieceTypes.put('7',new Piece(7,new int[]{1,1,1,1}));
 		this.hillClimbing = hillClimbing;
 		if(hillClimbing)
 			firstSol = true;
 	}
+	
+	
 	
 	public boolean resolv(){
 		System.out.println("Start");
@@ -64,10 +66,10 @@ public class LevelResolver {
 		firstSol = false;
 		if(hillClimbing){
 			finish = false;
-			int[] sumVector = list.get(level.getSolMat()[aux[0]][aux[1]] - '1').parser(prevPos,aux);
+			int[] sumVector = pieceTypes.get(level.getSolMat()[aux[0]][aux[1]]).parser(prevPos,aux);
 						
 						
-			hillclimbing(level.getSolMat(),aux,prevPos,sumVector,list.get(level.getSolMat()[sumVector[0]][sumVector[1]] - '1').otherEnd(sumVector[2]));
+			hillclimbing(level.getSolMat(),aux,prevPos,sumVector,pieceTypes.get(level.getSolMat()[sumVector[0]][sumVector[1]]).otherEnd(sumVector[2]));
 			
 		}
 		return false;
@@ -93,7 +95,7 @@ public class LevelResolver {
 		}
 		level.setMat(maxNeighbour.mat);
 		level.setPieces(maxNeighbour.pieces);
-		Piece firstPiece = list.get(level.getMat()[firstPos[0]][firstPos[1]] - '1');
+		Piece firstPiece = pieceTypes.get(level.getMat()[firstPos[0]][firstPos[1]]);
 		int[] auxer = firstPiece.parser(prevPos, firstPos);
 		hillclimbing(level.getMat(), firstPos, prevPos, auxer, firstPiece.otherEnd(auxer[2]));
 	}
@@ -107,13 +109,13 @@ public class LevelResolver {
 			neighbours.add(neighbAux);
 		}
 		
-		Piece pieceSecondPos = list.get(solution[secondPos[0]][secondPos[1]] - '1');
+		Piece pieceSecondPos = pieceTypes.get(solution[secondPos[0]][secondPos[1]]);
 		int secondPosPrevPos = pieceSecondPos.otherEnd(postPos);
 
 		int auxer[] = pieceSecondPos.parser(secondPosPrevPos, secondPos);
 		if((auxer[0] == -1) || (auxer[1]  == -1)	|| (auxer[0] == level.getCols()) || (auxer[1] == level.getRows()))
 			return; // Todo: esto se podria hacer en menos comparaciones*/
-		postPos = list.get(solution[auxer[0]][auxer[1]] - '1').otherEnd(auxer[2]);
+		postPos = pieceTypes.get(solution[auxer[0]][auxer[1]]).otherEnd(auxer[2]);
 		
 		stepHillNeighbour(solution, secondPos, secondPosPrevPos , auxer ,postPos,neighbours);
 	}
@@ -133,8 +135,8 @@ public class LevelResolver {
 	
 	private Neighbour getNeighbour(char[][] mat,int[] posInicial,int prevPos,int[] posFinal,int postPos){	
 		//System.out.println("Entro a testear neighbours " + posInicial[0] + " " + posInicial[1] + " " + prevPos + " , y final " + posFinal[0] + " " + posFinal[1] + " " +postPos);
-		for(Piece firstPiece : list){
-			for(Piece secondPiece : list){
+		for(Piece firstPiece : pieceTypes.values()){
+			for(Piece secondPiece : pieceTypes.values()){
 				if(level.getPieces()[firstPiece.getIdPieza()-1]>0 && level.getPieces()[secondPiece.getIdPieza()-1]>0){
 					if(firstPiece.getDirecciones()[prevPos] == 1 && firstPiece.getIdPiezaChar() != mat[posInicial[0]][posInicial[1]] && firstPiece.getIdPieza() != 7){
 						if(secondPiece.getDirecciones()[postPos] == 1 && secondPiece.getIdPiezaChar() != mat[posFinal[0]][posFinal[1]] && secondPiece.getIdPieza() != 7){
@@ -147,8 +149,8 @@ public class LevelResolver {
 									int[] piecesAux = level.getPieces().clone();
 									piecesAux[matAux[posInicial[0]][posInicial[1]] - '1'] += 1;
 									piecesAux[matAux[posFinal[0]][posFinal[1]] - '1'] += 1;
-									matAux[posInicial[0]][posInicial[1]] =firstPiece.getIdPiezaChar();
-									matAux[posFinal[0]][posFinal[1]] =secondPiece.getIdPiezaChar();
+									matAux[posInicial[0]][posInicial[1]] = firstPiece.getIdPiezaChar();
+									matAux[posFinal[0]][posFinal[1]] = secondPiece.getIdPiezaChar();
 									piecesAux[firstPiece.getIdPieza()-1] -= 1;
 									piecesAux[secondPiece.getIdPieza()-1] -= 1;
 									
@@ -182,7 +184,8 @@ public class LevelResolver {
 				if(stepsMade > partialSolutionSteps){
 					partialSolutionSteps = stepsMade;
 					level.setMat(mat);
-					level.setSolMat(mat); 
+					level.setSolMat(mat);
+					System.out.println("Encontre solucion mejor de: " + stepsMade +" steps.");
 				}
 			}
 			if(firstSol){
@@ -211,11 +214,12 @@ public class LevelResolver {
 			}
 			level.setMat(mat);
 		}
-		cont+=1;
+		/*cont+=1;
 		if(cont%10000000 == 0){
-			level.setMat(mat);
-		}
-		for(Piece elem : list){
+			//level.setMat(mat);
+			System.out.println("Sigo funcando" + stepsMade);
+		}*/
+		for(Piece elem : pieceTypes.values()){
 			if(!finish && elem.getDirecciones()[prevPos] == 1){
 				int[] sumVector = elem.parser(prevPos,pos);				
 				int prevPosAux = sumVector[2];
@@ -233,7 +237,7 @@ public class LevelResolver {
 					char[][] matb = new char[level.getCols()][level.getRows()];
 					copy(mat,matb);
 					if(mat[pos[0]][pos[1]]=='7'){
-						sumVector = list.get(6).parser(prevPos,pos);
+						sumVector = pieceTypes.get('7').parser(prevPos,pos);
 						prevPosAux = sumVector[2];
 						recurResolv(matb,sumVector,posFinal,prevPosAux,pieces,stepsMade + 1); 
 						break;
@@ -243,7 +247,7 @@ public class LevelResolver {
 						
 						int[] yetAnotherVec = elem.parser(prevPos,pos);//TODO: meter esto adentro del if de abajo
 						
-						if(!firstSol && hillClimbing && list.get(mat[posFinal[0]][posFinal[1]] - '1').getDirecciones()[yetAnotherVec[2]] == 1 && 
+						if(!firstSol && hillClimbing && pieceTypes.get(mat[posFinal[0]][posFinal[1]]).getDirecciones()[yetAnotherVec[2]] == 1 && 
 								yetAnotherVec[0]== posFinal[0] && yetAnotherVec[1]== posFinal[1]){
 							//Chequeo si me estoy chocando bien
 							System.out.println("Encontre forma de juntarlos");
