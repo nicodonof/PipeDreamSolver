@@ -6,7 +6,7 @@ import java.util.List;
 import defaulter.Piece;
 
 public class LevelResolver {
-	private static final long TIME = 50;
+	private static final long TIME = 750;
 	private static final int MAXSTEPSHILLCLIMBING = 6;
 	private static int MAXLENGHT;
 	private PieceVector<Character, Piece> pieceTypes;
@@ -97,7 +97,8 @@ public class LevelResolver {
 		level.setPieces(maxNeighbour.pieces);
 		Piece firstPiece = pieceTypes.get(level.getMat()[firstPos[0]][firstPos[1]]);
 		int[] auxer = firstPiece.parser(prevPos, firstPos);
-		hillclimbing(level.getMat(), firstPos, prevPos, auxer, firstPiece.otherEnd(auxer[2]));
+		Piece secondPiece = pieceTypes.get(level.getMat()[auxer[0]][auxer[1]]);
+		hillclimbing(level.getMat(), firstPos, prevPos, auxer, secondPiece.otherEnd(auxer[2]));
 	}
 
 	private void stepHillNeighbour(char[][] solution,int[] firstPos,int prevPos,int[] secondPos, int postPos,List<Neighbour> neighbours){		
@@ -115,8 +116,8 @@ public class LevelResolver {
 		int auxer[] = pieceSecondPos.parser(secondPosPrevPos, secondPos);
 		if((auxer[0] == -1) || (auxer[1]  == -1)	|| (auxer[0] == level.getCols()) || (auxer[1] == level.getRows()))
 			return; // Todo: esto se podria hacer en menos comparaciones*/
+
 		postPos = pieceTypes.get(solution[auxer[0]][auxer[1]]).otherEnd(auxer[2]);
-		
 		stepHillNeighbour(solution, secondPos, secondPosPrevPos , auxer ,postPos,neighbours);
 	}
 	
@@ -140,25 +141,29 @@ public class LevelResolver {
 				if(level.getPieces()[firstPiece.getIdPieza()-1]>0 && level.getPieces()[secondPiece.getIdPieza()-1]>0){
 					if(firstPiece.getDirecciones()[prevPos] == 1 && firstPiece.getIdPiezaChar() != mat[posInicial[0]][posInicial[1]] && firstPiece.getIdPieza() != 7){
 						if(secondPiece.getDirecciones()[postPos] == 1 && secondPiece.getIdPiezaChar() != mat[posFinal[0]][posFinal[1]] && secondPiece.getIdPieza() != 7){
-							int[] rexua  = secondPiece.parser(postPos,posFinal);
-							if(rexua[0]>=0 && rexua[0]<level.getCols() && rexua[1]>= 0 && rexua[1]<level.getRows()){
-								if(mat[rexua[0]][rexua[1]] == ' ' || mat[rexua[0]][rexua[1]] == '7'){
-									finish = false;
-									char[][] matAux = new char[level.getCols()][level.getRows()];
-									copy(mat,matAux);
-									int[] piecesAux = level.getPieces().clone();
-									piecesAux[matAux[posInicial[0]][posInicial[1]] - '1'] += 1;
-									piecesAux[matAux[posFinal[0]][posFinal[1]] - '1'] += 1;
-									matAux[posInicial[0]][posInicial[1]] = firstPiece.getIdPiezaChar();
-									matAux[posFinal[0]][posFinal[1]] = secondPiece.getIdPiezaChar();
-									piecesAux[firstPiece.getIdPieza()-1] -= 1;
-									piecesAux[secondPiece.getIdPieza()-1] -= 1;
-									
-									int[] auxer = firstPiece.parser(prevPos, posInicial);
-									
-									recurResolv(matAux,auxer,posFinal, auxer[2], piecesAux,partialSolutionSteps);						
-									if(finish){
-										return new Neighbour(level.getMat(),partialSolutionSteps,piecesAux);
+							int[] aDondeVaPosFinal  = secondPiece.parser(postPos,posFinal);
+							int[] aDondeVaPosInicial  = firstPiece.parser(prevPos,posInicial);
+							if(aDondeVaPosFinal[0]>=0 && aDondeVaPosFinal[0]<level.getCols() && aDondeVaPosFinal[1]>= 0 && aDondeVaPosFinal[1]<level.getRows()){
+								if(mat[aDondeVaPosFinal[0]][aDondeVaPosFinal[1]] == ' ' || mat[aDondeVaPosFinal[0]][aDondeVaPosFinal[1]] == '7'){
+									if(aDondeVaPosInicial[0]>=0 && aDondeVaPosInicial[0]<level.getCols() && aDondeVaPosInicial[1]>= 0 && aDondeVaPosInicial[1]<level.getRows()){
+										if(mat[aDondeVaPosInicial[0]][aDondeVaPosInicial[1]] == ' ' || mat[aDondeVaPosInicial[0]][aDondeVaPosInicial[1]] == '7'){
+											finish = false;
+											char[][] matAux = new char[level.getCols()][level.getRows()];
+											copy(mat,matAux);
+											int[] piecesAux = level.getPieces().clone();
+											piecesAux[matAux[posInicial[0]][posInicial[1]] - '1'] += 1;
+											piecesAux[matAux[posFinal[0]][posFinal[1]] - '1'] += 1;
+											matAux[posInicial[0]][posInicial[1]] = firstPiece.getIdPiezaChar();
+											matAux[posFinal[0]][posFinal[1]] = secondPiece.getIdPiezaChar();
+											piecesAux[firstPiece.getIdPieza()-1] -= 1;
+											piecesAux[secondPiece.getIdPieza()-1] -= 1;
+											
+											int[] auxer = firstPiece.parser(prevPos, posInicial);
+											System.out.println("Cambio la pieza :"  + posInicial[0] + " " + posInicial[1] + " " + prevPos + " , y final " + posFinal[0] + " " + posFinal[1] + " " +postPos);
+											recurResolv(matAux,auxer,posFinal, auxer[2], piecesAux,partialSolutionSteps);						
+											if(finish)
+												return new Neighbour(level.getMat(),partialSolutionSteps,piecesAux);											
+										}								
 									}
 								}
 							}
