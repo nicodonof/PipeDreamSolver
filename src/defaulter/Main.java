@@ -23,7 +23,7 @@ public class Main {
 			level.print();
 		}
 		f = new JFrame("level");
-		LevelResolver ls = new LevelResolver(level,false,true);
+		LevelResolver ls = new LevelResolver(level,true,true);
 		level.setLd(new LevelDrawer(level,ls));
 		
 		

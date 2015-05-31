@@ -6,7 +6,7 @@ import java.util.List;
 import defaulter.Piece;
 
 public class LevelResolver {
-	private static final long TIME = 750;
+	private static final long TIME = 100;
 	private static final int MAXSTEPSHILLCLIMBING = 6;
 	private static int MAXLENGHT;
 	private PieceVector<Character, Piece> pieceTypes;
@@ -138,15 +138,18 @@ public class LevelResolver {
 		//System.out.println("Entro a testear neighbours " + posInicial[0] + " " + posInicial[1] + " " + prevPos + " , y final " + posFinal[0] + " " + posFinal[1] + " " +postPos);
 		for(Piece firstPiece : pieceTypes.values()){
 			for(Piece secondPiece : pieceTypes.values()){
+				boolean specialCase = false;
 				if(level.getPieces()[firstPiece.getIdPieza()-1]>0 && level.getPieces()[secondPiece.getIdPieza()-1]>0){
-					if(firstPiece.getDirecciones()[prevPos] == 1 && firstPiece.getIdPiezaChar() != mat[posInicial[0]][posInicial[1]] && firstPiece.getIdPieza() != 7){
-						if(secondPiece.getDirecciones()[postPos] == 1 && secondPiece.getIdPiezaChar() != mat[posFinal[0]][posFinal[1]] && secondPiece.getIdPieza() != 7){
+					if((firstPiece.getIdPiezaChar() == mat[posInicial[0]][posInicial[1]] && secondPiece.getIdPieza() == 7) || (secondPiece.getIdPiezaChar() == mat[posInicial[0]][posInicial[1]] && firstPiece.getIdPieza() == 7))
+						specialCase = true;
+					if(firstPiece.getDirecciones()[prevPos] == 1 && ((firstPiece.getIdPiezaChar() != mat[posInicial[0]][posInicial[1]] && firstPiece.getIdPieza() != 7) || specialCase)){
+						if(secondPiece.getDirecciones()[postPos] == 1 && ((secondPiece.getIdPiezaChar() != mat[posFinal[0]][posFinal[1]] && secondPiece.getIdPieza() != 7) || specialCase)){
 							int[] aDondeVaPosFinal  = secondPiece.parser(postPos,posFinal);
 							int[] aDondeVaPosInicial  = firstPiece.parser(prevPos,posInicial);
 							if(aDondeVaPosFinal[0]>=0 && aDondeVaPosFinal[0]<level.getCols() && aDondeVaPosFinal[1]>= 0 && aDondeVaPosFinal[1]<level.getRows()){
-								if(mat[aDondeVaPosFinal[0]][aDondeVaPosFinal[1]] == ' ' || mat[aDondeVaPosFinal[0]][aDondeVaPosFinal[1]] == '7'){
+								if(specialCase || (mat[aDondeVaPosFinal[0]][aDondeVaPosFinal[1]] == ' ' || mat[aDondeVaPosFinal[0]][aDondeVaPosFinal[1]] == '7')){
 									if(aDondeVaPosInicial[0]>=0 && aDondeVaPosInicial[0]<level.getCols() && aDondeVaPosInicial[1]>= 0 && aDondeVaPosInicial[1]<level.getRows()){
-										if(mat[aDondeVaPosInicial[0]][aDondeVaPosInicial[1]] == ' ' || mat[aDondeVaPosInicial[0]][aDondeVaPosInicial[1]] == '7'){
+										if(specialCase || (mat[aDondeVaPosInicial[0]][aDondeVaPosInicial[1]] == ' ' || mat[aDondeVaPosInicial[0]][aDondeVaPosInicial[1]] == '7')){
 											finish = false;
 											char[][] matAux = new char[level.getCols()][level.getRows()];
 											copy(mat,matAux);
@@ -159,7 +162,7 @@ public class LevelResolver {
 											piecesAux[secondPiece.getIdPieza()-1] -= 1;
 											
 											int[] auxer = firstPiece.parser(prevPos, posInicial);
-											System.out.println("Cambio la pieza :"  + posInicial[0] + " " + posInicial[1] + " " + prevPos + " , y final " + posFinal[0] + " " + posFinal[1] + " " +postPos);
+											System.out.println("Cambio la pieza: "  + posInicial[0] + " " + posInicial[1] + " " + prevPos + ", y final " + posFinal[0] + " " + posFinal[1] + " " +postPos);
 											recurResolv(matAux,auxer,posFinal, auxer[2], piecesAux,partialSolutionSteps);						
 											if(finish)
 												return new Neighbour(level.getMat(),partialSolutionSteps,piecesAux);											

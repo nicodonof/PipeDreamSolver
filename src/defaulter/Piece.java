@@ -12,6 +12,11 @@ public class Piece {
 	}
 	
 	public int otherEnd(int endDirection){
+		if(idPieza == 7){
+			if(endDirection%2==0)
+				return ++endDirection;
+			else return --endDirection;
+		}
 		for(int i=0;i<4;i++){
 			if(direcciones[i] == 1 && i!= endDirection){
 				return i;
