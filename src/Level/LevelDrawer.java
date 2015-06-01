@@ -41,7 +41,7 @@ public class LevelDrawer {
 	        } catch (IOException e) {
 	            e.printStackTrace();
 	        }
-	    	draw(level);
+	    	draw(level, level.getMat());
 	    	updateFrame();
 	    	g.setVisible(true);
 	    	f.setVisible(true);
@@ -65,12 +65,11 @@ public class LevelDrawer {
 	        SwingUtilities.invokeLater(r);
 		}
 	    
-	    public void draw(Level level ){
+	    public void draw(Level level, char[][] mat){
 	    	gui.removeAll();
 	    	piece1.setText(""+ 3);
 	    	gui2.add(piece1);
-	    	char[][] mat = level.getMat();
-		    int aux = 0;
+	    	int aux = 0;
 		 	for(int i = 0; i < level.getRows();i++){
 	    		for(int j = 0; j < level.getCols(); j++){
 	    			switch(mat[j][i]){

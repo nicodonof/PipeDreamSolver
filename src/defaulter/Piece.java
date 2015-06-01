@@ -2,23 +2,24 @@ package defaulter;
 
 public class Piece {
 	
-	private int idPieza;
-	private int[] direcciones;
-	private int[][] vectoricitos = {{0,1},{0,-1},{-1,0},{1,0}};
+	private int pieceID;
+	private int[] directions;
+	private int[][] auxVecs = {{0,1},{0,-1},{-1,0},{1,0}};
 	
 	public Piece(int idPieza, int[] direcciones){
-		this.idPieza = idPieza;
-		this.direcciones = direcciones;
+		this.pieceID = idPieza;
+		this.directions = direcciones;
 	}
 	
 	public int otherEnd(int endDirection){
-		if(idPieza == 7){
+		if(pieceID == 7){
 			if(endDirection%2==0)
-				return ++endDirection;
-			else return --endDirection;
+				return endDirection + 1;
+			else
+				return endDirection - 1;
 		}
 		for(int i=0;i<4;i++){
-			if(direcciones[i] == 1 && i!= endDirection){
+			if(directions[i] == 1 && i!= endDirection){
 				return i;
 			}
 		}
@@ -27,12 +28,12 @@ public class Piece {
 	
 	public int[] parser(int prevPos,int[] pos){
 		//Devuelve un vector con la nueva pos y la nueva prev pos en funcion a donde estabas tu prev pos y la pieza en el lugar
-		int[] dirClone = direcciones.clone();
+		int[] dirClone = directions.clone();
 		dirClone[prevPos] = 0; 
 		int[] auxer = new int[3];
-		if(idPieza == 7){
-			auxer[0] = vectoricitos[prevPos][0];
-			auxer[1] = vectoricitos[prevPos][1];
+		if(pieceID == 7){
+			auxer[0] = auxVecs[prevPos][0];
+			auxer[1] = auxVecs[prevPos][1];
 		}else{
 			auxer[0] = dirClone[2] - dirClone[3];
 			auxer[1] = -dirClone[0] + dirClone[1];
@@ -54,18 +55,20 @@ public class Piece {
 	}
 	
 	public int getIdPieza() {
-		return idPieza;
+		return pieceID;
 	}
 	
 	public char getIdPiezaChar() {
-		return (char) (idPieza + '0');
+		return (char) (pieceID + '0');
 	}
 
 	public int[] getDirecciones() {
-		return direcciones;
+		return directions;
 	}
 
 	public void nextStep(){
 		
 	}
+	
+	
 }

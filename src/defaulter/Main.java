@@ -1,8 +1,15 @@
 package defaulter;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
+import defaulter.TimeOut.MyJob;
 import Level.Level;
 import Level.LevelDrawer;
 import Level.LevelReader;
@@ -15,7 +22,7 @@ public class Main {
 	public static void main(String[] args/*agregar q se pase por parametro*/) {
 		level = null;
 		boolean progress = true;
-		level = LevelReader.loadLevel(new Level(),"test.txt");
+		level = LevelReader.loadLevel(new Level(),"test3.txt");
 		if(level == null){
 			System.out.println("Archivo Mal Formado");
 			return;
@@ -28,12 +35,27 @@ public class Main {
 		
 		
 		long startTime = System.nanoTime();
+	//	Future<String> control = Executors.newSingleThreadExecutor().submit(ls);
+	//	String result = new String();
+     /*   try {
+
+            result = control.get(200000000, TimeUnit.MILLISECONDS);
+
+        } catch (TimeoutException ex) {
+
+            control.cancel(true);
+
+        } catch (InterruptedException ex) {
+
+        } catch (ExecutionException ex) {
+
+        }*/
 		ls.resolv();
 		long stopTime = System.nanoTime();
-		
+	 	//System.out.println(result);
 		System.out.println((stopTime - startTime) / Math.pow(10, 9));
-		level.getLd().draw(level);
-		level.setMat(level.getSolMat());
+		//level.setMat(level.getSolMat());
+		level.drawMat(level.getSolMat());
 		System.out.println("termino");
 		ls.print2(level.getSolMat());
 		System.out.println(ls.cont);

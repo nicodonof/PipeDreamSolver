@@ -1,8 +1,5 @@
 package Level;
 
-import defaulter.Main;
-import defaulter.Piece;
-
 public class Level {
 	protected int rows;
 	protected int cols;
@@ -64,11 +61,15 @@ public class Level {
 	}
 	public void setMat(char[][] mat) {
 		this.mat = mat;
+	}
+	
+	public void drawMat(char[][] mat){
 		if(ld!=null){
-			ld.draw(this);
+			ld.draw(this, mat);
 			ld.updateFrame();
 		}
 	}
+	
 	public int[] getPieces() {
 		return pieces;
 	}
