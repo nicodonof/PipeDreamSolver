@@ -173,7 +173,7 @@ public class LevelResolver /*implements Callable<String>*/{
 														if ((postPos <= 1 && mat[posFinal[0] + 1][posFinal[1]] != ' ' && mat[posFinal[0] - 1][posFinal[1]] != ' ') || (postPos >= 2 && mat[posFinal[0]][posFinal[1] + 1] != ' ' && mat[posFinal[0]][posFinal[1] - 1] != ' '))
 															validSeven[1] = false;
 	
-												if (validSeven[0] && validSeven[1]) {
+												if (validSeven[0] && validSeven[1] || (specialCase && mat[posFinal[0]][posFinal[1]] == '7')) {
 													finish = false;
 													char[][] matAux = new char[level.getCols()][level.getRows()];
 													copy(mat, matAux);
