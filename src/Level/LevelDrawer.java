@@ -18,9 +18,7 @@ public class LevelDrawer {
 	    private JLabel piece1;
 	    public LevelDrawer(Level level,LevelResolver levelResolver) {
 	    	f = new JFrame("level");
-	    	g = new JFrame("frame2");
 	    	gui = new JPanel(new GridLayout(level.getRows(), level.getCols()));
-	    	gui2 = new JPanel(new GridLayout(level.getRows(), level.getCols()));
 	    	imgs = new ImageIcon[19];
 	    	try {
 	            BufferedImage sprite = ImageIO.read(new File("Pipes01.png"));
@@ -37,13 +35,11 @@ public class LevelDrawer {
 	            	imgs[i+12] = new ImageIcon(sprite.getSubimage(x, y+96, width, height));
 	    	    }
 	  		    imgs[18] = new ImageIcon("Nada.png");
-	  		    piece1 = new JLabel("Steps made: "+ levelResolver.partialSolutionSteps);
 	        } catch (IOException e) {
 	            e.printStackTrace();
 	        }
 	    	draw(level, level.getMat());
 	    	updateFrame();
-	    	g.setVisible(true);
 	    	f.setVisible(true);
 	    	f.setResizable(false);
 		}
@@ -51,10 +47,6 @@ public class LevelDrawer {
 	    public void updateFrame(){
 			Runnable r = new Runnable() {
 				public void run() {
-	                g.add(gui2);
-	                g.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-	                g.pack();
-	                g.setMinimumSize(g.getSize());
 					f.add(gui);
 	                f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	                f.pack();
@@ -67,8 +59,6 @@ public class LevelDrawer {
 	    
 	    public void draw(Level level, char[][] mat){
 	    	gui.removeAll();
-	    	piece1.setText(""+ 3);
-	    	gui2.add(piece1);
 	    	int aux = 0;
 		 	for(int i = 0; i < level.getRows();i++){
 	    		for(int j = 0; j < level.getCols(); j++){
