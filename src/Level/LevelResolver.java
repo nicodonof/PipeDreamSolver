@@ -4,15 +4,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import com.sun.org.apache.bcel.internal.generic.GOTO;
-
 import defaulter.Piece;
 
 
 
 public class LevelResolver /*implements Callable<String>*/{
-	private static final long TIME = 100;
-	private static final int MAXSTEPSHILLCLIMBING = 6;
+	private static final long TIME = 1000;
+	private static final int MAXSTEPSHILLCLIMBING = 4;
 	private static int MAXLENGTH;
 	private PieceVector<Character, Piece> pieceTypes;
 	private Level level;
@@ -240,6 +238,7 @@ public class LevelResolver /*implements Callable<String>*/{
 		if(hillClimbing && !firstSol && pos[0] == posFinal[0] && pos[1] == posFinal[1] && pieceTypes.get(mat[pos[0]][pos[1]]).getDirecciones()[prevPos] == 1)
 			flasg = true;
 		
+		System.out.println("steps " + (stepsMade - partialSolutionSteps));
 		if(hillClimbing && !firstSol && (stepsMade - partialSolutionSteps) == MAXSTEPSHILLCLIMBING)
 			return ;
 		
