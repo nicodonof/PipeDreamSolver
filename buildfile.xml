@@ -4,15 +4,14 @@
         <javac srcdir="src" destdir="bin"/>
     </target>
     <target name="dist" depends="compile">
-        <jar destfile="sample.jar" basedir="bin">
-			<manifest>
- 				<attribute name="Main-Class" value="sample.SampleApp"/>
- 			</manifest>
- 		</jar>
-    </target>
+        <jar destfile="proy.jar" basedir="bin">
+    	<manifest>
+    		<attribute name="Main-Class" value="defaulter.Main"/>
+    	</manifest> 
+        </jar>
+	</target>
     <target name="clean">
  		<delete dir="bin"/>
  		<delete dir="doc" />
- 		<delete file="sample.jar" />
  	</target> 
 </project>

@@ -3,7 +3,7 @@ package Level;
 import java.util.LinkedList;
 import java.util.List;
 
-import jdk.internal.org.objectweb.asm.tree.IntInsnNode;
+//import jdk.internal.org.objectweb.asm.tree.IntInsnNode;
 import defaulter.Piece;
 
 public class LevelResolver {
@@ -22,6 +22,7 @@ public class LevelResolver {
 	private boolean firstSol = false;
 	private long MAXTIMEMINUTES;
 	private long startTime;
+	
 	public LevelResolver(Level level, boolean progress, boolean hillClimbing, long maxtime) {
 		this.level = level;
 		this.progress = progress;
@@ -70,6 +71,7 @@ public class LevelResolver {
 		
 		if(!hillClimbing){
 			recurResolv(level.getMat(), aux, null, prevPos, 0, level.getPieces().clone(), 0);
+			System.out.println("Cantidad de pasos: "+ (partialSolutionSteps+1));
 		}
 		else{
 
@@ -99,7 +101,7 @@ public class LevelResolver {
 			}
 			
 
-			System.out.println("Mi solucion final es de " + bestSolutionSteps + " pasos");
+			System.out.println("Mi solucion final es de " + bestSolutionSteps + " pasos.");
 			if(bestSolution != null){
 				level.setSolMat(bestSolution);
 			}

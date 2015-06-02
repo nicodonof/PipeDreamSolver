@@ -77,11 +77,11 @@ public class Main {
 	
         ls.resolv();
 		long stopTime = System.nanoTime();
-		System.out.println("Termino en " + ((double)(stopTime - startTime) / 1000000000.0));
+		System.out.println("Termino en " + ((double)(stopTime - startTime) / 1000000000.0) + " segundos.");
 		level.setMat(level.getSolMat());
 		level.drawMat(level.getSolMat());
 		
-		ls.print2(level.getSolMat());
+	//	ls.print2(level.getSolMat());
 	}
 		
 	
