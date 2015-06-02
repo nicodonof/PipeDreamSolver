@@ -9,7 +9,7 @@ import defaulter.Piece;
 public class LevelResolver {
 	private static final long TIME = 100;
 	private static final double NANOMULT = 60000000000.0;
-	private static int MAXSTEPSHILLCLIMBING = 4;
+	private static int MAXSTEPSHILLCLIMBING = 5;
 	private static int MAXLENGTH;
 	private PieceVector<Character, Piece> pieceTypes;
 	private Level level;
@@ -29,7 +29,7 @@ public class LevelResolver {
 		MAXLENGTH = level.total();
 		pieceTypes = new PieceVector<Character, Piece>();
 		pieceTypes.put('7', new Piece(7, new int[] { 1, 1, 1, 1 }));
-		pieceTypes.put('1', new Piece(1, new int[] { 1, 0, 0, 1 }));// N S E W
+		pieceTypes.put('1', new Piece(1, new int[] { 1, 0, 0, 1 }));
 		pieceTypes.put('2', new Piece(2, new int[] { 1, 0, 1, 0 }));
 		pieceTypes.put('3', new Piece(3, new int[] { 0, 1, 1, 0 }));
 		pieceTypes.put('4', new Piece(4, new int[] { 0, 1, 0, 1 }));
@@ -100,48 +100,10 @@ public class LevelResolver {
 				shuffle(pieceTypes);
 			}
 			
-
-			System.out.println("Mi solucion final es de " + bestSolutionSteps + " pasos.");
 			if(bestSolution != null){
 				level.setSolMat(bestSolution);
 			}
-			
-			
-			
-			
-			/*List<Neighbour> solutionList = new LinkedList<Neighbour>();
-
-			char[][] matVacia = new char[level.getCols()][level.getRows()];
-			int[] initialPieces = level.getPieces().clone();
-			copy(level.getMat(),matVacia);
-			while((double)(System.nanoTime() - startTime)/NANOMULT <= MAXTIMEMINUTES){
-				level.setPieces(initialPieces.clone());
-				finish = false;
-				firstSol = true;
-				recurResolv(matVacia, aux, null, prevPos, 0, level.getPieces(), 0);
-				int stepsForCurrentResolv = partialSolutionSteps;
-				firstSol = false;
-				if(finish){
-					int[] positionSecond = pieceTypes.get(level.getSolMat()[aux[0]][aux[1]]).parser(prevPos, aux);				
-					hillclimbing(level.getSolMat(), aux, prevPos, positionSecond, pieceTypes.get(level.getSolMat()[positionSecond[0]][positionSecond[1]]).otherEnd(positionSecond[2]));
-					solutionList.add(new Neighbour(level.getSolMat(),level.getSolutionSize() + stepsForCurrentResolv,level.getPieces()));				
-				}
-				shuffle(pieceTypes);
-			}
-			int bestSolutionSteps = 0;
-			Neighbour bestSolution = null;
-			System.out.println("TENGO " + solutionList.size() + " SOLUCIONES EN MI LISTA");
-			for(Neighbour solution :solutionList){
-				if(solution.length > bestSolutionSteps){
-					bestSolutionSteps = solution.length;
-					bestSolution = solution;
-				}
-			}
-			System.out.println("Mi solucion final es de " + bestSolution.length + " pasos");
-			if(bestSolution != null){
-				level.setSolMat(bestSolution.mat);
-				level.setPieces(bestSolution.pieces);
-			}*/		
+			System.out.println(bestSolutionSteps);
 		}
 		return true;
 	}
@@ -212,7 +174,8 @@ public class LevelResolver {
 	private Neighbour getNeighbour(char[][] mat, int[] posInit, int prevPos, int[] posFinal, int postPos) {
 		if((double)(System.nanoTime() - startTime)/NANOMULT >= MAXTIMEMINUTES)
 			return null;
-		
+		Neighbour bestPosibleSwap = null;
+		int bestPosibleSwapLength = 0;
 		Piece siete = pieceTypes.get('7');
 		if (level.getPieces()[6] > 0) {
 				if(mat[posInit[0]][posInit[1]] != '7' && mat[posInit[0]][posInit[1]] != '6' && mat[posInit[0]][posInit[1]] != '5'){
@@ -229,7 +192,9 @@ public class LevelResolver {
 							
 							recurResolv(matAux, posInitNext, posFinal, posInitNext[2], postPos, piecesAux, 0);
 							
-							if (finish){
+							if (finish && partialSolutionSteps > bestPosibleSwapLength){
+								bestPosibleSwap =new Neighbour(level.getMat(), partialSolutionSteps, piecesAux);
+								bestPosibleSwapLength = partialSolutionSteps;
 								return new Neighbour(level.getMat(), partialSolutionSteps, piecesAux);
 							}
 						}
@@ -276,7 +241,9 @@ public class LevelResolver {
 												int[] auxer = firstPiece.parser(prevPos, posInit);
 												recurResolv(matAux, auxer, posFinal, auxer[2], postPos, piecesAux, 0);
 											
-												if (finish){
+												if (finish && partialSolutionSteps > bestPosibleSwapLength){
+													bestPosibleSwap =new Neighbour(level.getMat(), partialSolutionSteps, piecesAux);
+													bestPosibleSwapLength = partialSolutionSteps;
 													return new Neighbour(level.getMat(), partialSolutionSteps, piecesAux);
 												}
 											}
@@ -289,7 +256,7 @@ public class LevelResolver {
 				}
 			}
 		}
-		return null;
+		return bestPosibleSwap;
 	}
 
 	private void recurResolv(char[][] mat, int[] pos, int[] posFinal, int prevPos, int finalDir, int[] pieces, int stepsMade) {
