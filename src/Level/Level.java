@@ -3,6 +3,7 @@ package Level;
 public class Level {
 	protected int rows;
 	protected int cols;
+	protected int solutionSize;
 	protected char[][] mat, solMat;
 	private int[] pieces, beggining;
 	private LevelDrawer ld;
@@ -100,8 +101,13 @@ public class Level {
 	public void setSolMat(char[][] solMat) {
 		this.solMat = solMat;
 	}
+	public int getSolutionSize() {
+		return solutionSize;
+	}
 
-	
+	public void setSolutionSize(int solutionSize) {
+		this.solutionSize = solutionSize;
+	}
 	
 	
 }

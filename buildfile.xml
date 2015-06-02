@@ -1,0 +1,18 @@
+<project name="pipedream" default="dist" basedir=".">
+    <target name="compile">
+        <mkdir dir="bin"/>
+        <javac srcdir="src" destdir="bin"/>
+    </target>
+    <target name="dist" depends="compile">
+        <jar destfile="sample.jar" basedir="bin">
+			<manifest>
+ 				<attribute name="Main-Class" value="sample.SampleApp"/>
+ 			</manifest>
+ 		</jar>
+    </target>
+    <target name="clean">
+ 		<delete dir="bin"/>
+ 		<delete dir="doc" />
+ 		<delete file="sample.jar" />
+ 	</target> 
+</project>

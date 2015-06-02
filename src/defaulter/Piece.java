@@ -54,15 +54,15 @@ public class Piece {
 		return auxer;
 	}
 	
-	public int getIdPieza() {
+	public int getPieceID() {
 		return pieceID;
 	}
 	
-	public char getIdPiezaChar() {
+	public char getPieceIDChar() {
 		return (char) (pieceID + '0');
 	}
 
-	public int[] getDirecciones() {
+	public int[] getDirections() {
 		return directions;
 	}
 
